@@ -1,7 +1,6 @@
 package ohsoontac.serverapi.domain.user.exception;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+
 import ohsoontac.serverapi.global.error.exception.ErrorCode1;
 import ohsoontac.serverapi.global.error.exception.OhSoonTacException;
 

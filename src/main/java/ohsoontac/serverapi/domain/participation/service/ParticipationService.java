@@ -6,14 +6,17 @@ import lombok.RequiredArgsConstructor;
 import ohsoontac.serverapi.domain.common.ReservationStatus;
 import ohsoontac.serverapi.domain.participation.dto.request.AddParticipationDto;
 import ohsoontac.serverapi.domain.participation.entity.Participation;
-import ohsoontac.serverapi.domain.participation.exception.ParticipateException;
+import ohsoontac.serverapi.domain.participation.exception.DuplicatedParticipationException;
+import ohsoontac.serverapi.domain.participation.exception.ParticipationNotFound;
 import ohsoontac.serverapi.domain.participation.exception.SexException;
 import ohsoontac.serverapi.domain.participation.repository.ParticipationRepository;
 import ohsoontac.serverapi.domain.reservation.entity.Reservation;
 import ohsoontac.serverapi.domain.reservation.repository.ReservationRepository;
+import ohsoontac.serverapi.domain.reservation.service.ReservationUtils;
 import ohsoontac.serverapi.domain.user.entity.User;
 import ohsoontac.serverapi.domain.user.repository.UserRepository;
 import ohsoontac.serverapi.global.error.exception.ErrorCode1;
+import ohsoontac.serverapi.global.utils.UserUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,27 +26,36 @@ import java.util.Optional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class ParticipationService {
+public class ParticipationService implements ParticipationUtils {
 
 
     private final UserRepository userRepository;
 
     private final ReservationRepository reservationRepository;
 
+    private final UserUtils userUtils;
 
+    private final ReservationUtils reservationUtils;
     private final ParticipationRepository participationRepository;
+
 
 
     //참여하기
     @Transactional
     public Long addParticipation(AddParticipationDto addParticipationDto, String userUid) {
-        User findUser = userRepository.findByUid(userUid).get();
-        Reservation findReservation = reservationRepository.findById(addParticipationDto.getReservationId()).get();
+
+        User findUser = userUtils.getUserUid(userUid);
+
+        Reservation findReservation = reservationUtils.findReservation(addParticipationDto.getReservationId());
+
+        //User findUser = userRepository.findByUid(userUid).get();
+        //Reservation findReservation = reservationRepository.findById(addParticipationDto.getReservationId()).get();
 
         //
-        participationRepository.findParticipation1(findReservation.getId(), findReservation.getId()).ifPresent(
-                p-> {throw new ParticipateException(ErrorCode1.DUPLICATE_PARTICIPATION);}
-        );
+//        participationRepository.findParticipation1(findReservation.getId(), findUser.getId()).orElseThrow(
+//                ()-> DuplicatedParticipationException.EXCEPTION);
+
+        duplicationParticipation(findReservation.getId(), findUser.getId());
 
        if(!findReservation.getSex().equals(findUser.getSex())){
            throw new SexException(ErrorCode1.MISMATCH_SEX);
@@ -116,5 +128,20 @@ public class ParticipationService {
             return "3";
         }
         return "4";
+    }
+
+
+    @Override
+    public void duplicationParticipation(Long reservationId, Long userId) {
+        participationRepository.findParticipation1(reservationId, userId).ifPresent(p -> {
+                    throw DuplicatedParticipationException.EXCEPTION;
+                }
+        );
+    }
+
+    @Override
+    public Participation participatedReservation(Long reservationId, Long userId) {
+        return participationRepository.findParticipation1(reservationId,userId).orElseThrow(
+                () -> ParticipationNotFound.EXCEPTION);
     }
 }

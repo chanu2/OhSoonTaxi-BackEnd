@@ -8,6 +8,7 @@ import ohsoontac.serverapi.domain.reservation.dto.request.AddReservationDto;
 import ohsoontac.serverapi.domain.reservation.dto.request.UpdateReservationDto;
 import ohsoontac.serverapi.domain.reservation.dto.response.*;
 import ohsoontac.serverapi.domain.reservation.entity.Reservation;
+import ohsoontac.serverapi.domain.reservation.exception.ReservationNotFound;
 import ohsoontac.serverapi.domain.reservation.repository.ReservationRepository;
 import ohsoontac.serverapi.domain.user.entity.User;
 import ohsoontac.serverapi.domain.user.repository.UserRepository;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class ReservationService {
+public class ReservationService implements ReservationUtils {
 
     private final ReservationRepository reservationRepository;
 
@@ -154,5 +155,9 @@ public class ReservationService {
     }
 
 
-
+    @Override
+    public Reservation findReservation(Long id) {
+        return reservationRepository.findById(id).orElseThrow(
+                () -> ReservationNotFound.EXCEPTION);
+    }
 }

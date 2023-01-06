@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 public class UserUtilsImpl implements UserUtils {
 
     private final UserRepository userRepository;
-    
+
     @Override
     public User getUserUid(String uid) {
         return userRepository.findByUid(uid).orElseThrow(() -> UserNotFoundException.EXCEPTION);
