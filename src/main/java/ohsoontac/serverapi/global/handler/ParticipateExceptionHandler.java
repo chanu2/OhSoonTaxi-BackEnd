@@ -4,7 +4,9 @@ package ohsoontac.serverapi.global.handler;
 import ohsoontac.serverapi.domain.participation.exception.DuplicatedParticipationException;
 import ohsoontac.serverapi.global.error.ErrorResponse;
 import ohsoontac.serverapi.global.error.exception.ErrorCode1;
+import ohsoontac.serverapi.global.error.exception.ErrorCode2;
 import ohsoontac.serverapi.global.error.exception.ErrorResponse1;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,13 +22,13 @@ public class ParticipateExceptionHandler {
 
 
     @ExceptionHandler(DuplicatedParticipationException.class)
-    public ResponseEntity<ErrorResponse> duplicationHandler(
+    public ResponseEntity<ErrorResponse1> duplicationHandler(
             DuplicatedParticipationException e, HttpServletRequest request) {
-        ErrorCode1 code = e.getErrorCode1();
+        ErrorCode2 code = e.getErrorCode2();
 
         ErrorResponse1 errorResponse =
                 new ErrorResponse1(
-                        code.getHttpStatus(),
+                        code.getStatus(),
                         code.getReason(),
                         request.getRequestURL().toString());
         return ResponseEntity.status(HttpStatus.valueOf(code.getStatus())).body(errorResponse);

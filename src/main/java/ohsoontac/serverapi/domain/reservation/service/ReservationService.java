@@ -3,6 +3,7 @@ package ohsoontac.serverapi.domain.reservation.service;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ohsoontac.serverapi.domain.participation.repository.ParticipationRepository;
 import ohsoontac.serverapi.domain.reservation.dto.request.AddReservationDto;
 import ohsoontac.serverapi.domain.reservation.dto.request.UpdateReservationDto;
@@ -21,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -157,7 +158,9 @@ public class ReservationService implements ReservationUtils {
 
     @Override
     public Reservation findReservation(Long id) {
+        log.info("로직 탑니다");
         return reservationRepository.findById(id).orElseThrow(
                 () -> ReservationNotFound.EXCEPTION);
+
     }
 }

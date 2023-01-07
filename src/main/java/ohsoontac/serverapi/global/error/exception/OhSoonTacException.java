@@ -8,6 +8,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class OhSoonTacException extends RuntimeException{
 
-    ErrorCode1 errorCode1;
+    //ErrorCode1 errorCode1;
+
+    ErrorCode2 errorCode2;
 
 }
