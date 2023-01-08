@@ -7,10 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-@ControllerAdvice
-public class SexExceptionHandler {
-    @ExceptionHandler(SexException.class)
-    protected ResponseEntity<ErrorResponse> handleParticipateException(SexException e) {
-        return ErrorResponse.toResponseEntity(e.getErrorCode());
-    }
-}
+//@ControllerAdvice
+//public class SexExceptionHandler {
+//    @ExceptionHandler(SexException.class)
+//    protected ResponseEntity<ErrorResponse> handleParticipateException(SexException e) {
+//        return ErrorResponse.toResponseEntity(e.getErrorCode());
+//    }
+//}

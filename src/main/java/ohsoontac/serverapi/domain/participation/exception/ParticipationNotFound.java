@@ -19,5 +19,4 @@ public class ParticipationNotFound extends OhSoonTacException {
     }
 
 
-
 }

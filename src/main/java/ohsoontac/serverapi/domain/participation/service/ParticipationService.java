@@ -57,9 +57,11 @@ public class ParticipationService implements ParticipationUtils {
 
         duplicationParticipation(findReservation.getId(), findUser.getId());
 
-       if(!findReservation.getSex().equals(findUser.getSex())){
-           throw new SexException(ErrorCode1.MISMATCH_SEX);
-       }
+//       if(!findReservation.getSex().equals(findUser.getSex())){
+//           throw new SexException(ErrorCode1.MISMATCH_SEX);
+//       }
+
+        reservationUtils.matchSex(findUser.getSex(),findReservation.getSex());
 
 
         Participation participation = participationRepository.save(Participation.builder()
@@ -86,8 +88,10 @@ public class ParticipationService implements ParticipationUtils {
     @Transactional
     public Long deleteParticipation(Long reservationId, String userUid) {
 
-        User findUser = userRepository.findByUid(userUid).get();
-        Participation participation = participationRepository.findParticipation(reservationId, findUser.getId());
+        User findUser = userUtils.getUserUid(userUid);
+        Reservation reservation = reservationUtils.findReservation(reservationId);
+        Participation participation = participatedReservation(reservation.getId(), findUser.getId());
+//        Participation participation = participationRepository.findParticipation(reservationId, findUser.getId());
 
         participation.getReservation().subtractCurrentNum();
         participation.getReservation().subParticipation(participation);

@@ -36,7 +36,7 @@ public class ReserveDetailResponseDto {
     private String name;
     private String schoolNum;
 
-    private LocalDateTime createdAt;
+    //private LocalDateTime createdAt;
 
     private ReservationStatus reservationStatus;
     private List<ParticipationDto> participations;
@@ -62,7 +62,7 @@ public class ReserveDetailResponseDto {
         name = reservation.getUser().getName();
         schoolNum = reservation.getUser().getSchoolNum();
         reservationStatus = reservation.getReservationStatus();
-        createdAt = reservation.getCreatedAt();
+        //createdAt = reservation.getCreatedAt();
         participations = reservation.getParticipations().stream().map(participation -> new ParticipationDto(participation)).collect(Collectors.toList());
 
     }

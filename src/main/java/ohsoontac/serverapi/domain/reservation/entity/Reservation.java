@@ -9,6 +9,7 @@ import ohsoontac.serverapi.domain.common.ReservationStatus;
 import ohsoontac.serverapi.domain.common.Sex;
 import ohsoontac.serverapi.domain.participation.entity.Participation;
 import ohsoontac.serverapi.domain.user.entity.User;
+import ohsoontac.serverapi.global.database.BaseTimeEntity;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -22,12 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@EnableJpaAuditing
-@SpringBootApplication
-@EntityListeners(AuditingEntityListener.class)
+//@EnableJpaAuditing
+//@SpringBootApplication
+//@EntityListeners(AuditingEntityListener.class)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Reservation {
+public class Reservation extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reservation_id")
@@ -65,9 +66,6 @@ public class Reservation {
     private Double finishLatitude;
     private Double finishLongitude;
 
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
 
 
     @Builder
@@ -166,7 +164,6 @@ public class Reservation {
     public void changeReserveStatus(ReservationStatus reservationStatus){
         this.reservationStatus = reservationStatus;
     }
-
 
 
 

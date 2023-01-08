@@ -4,6 +4,8 @@ package ohsoontac.serverapi.domain.reservation.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ohsoontac.serverapi.domain.common.Sex;
+import ohsoontac.serverapi.domain.participation.exception.SexException;
 import ohsoontac.serverapi.domain.participation.repository.ParticipationRepository;
 import ohsoontac.serverapi.domain.reservation.dto.request.AddReservationDto;
 import ohsoontac.serverapi.domain.reservation.dto.request.UpdateReservationDto;
@@ -13,6 +15,7 @@ import ohsoontac.serverapi.domain.reservation.exception.ReservationNotFound;
 import ohsoontac.serverapi.domain.reservation.repository.ReservationRepository;
 import ohsoontac.serverapi.domain.user.entity.User;
 import ohsoontac.serverapi.domain.user.repository.UserRepository;
+import ohsoontac.serverapi.global.utils.UserUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,23 +35,32 @@ public class ReservationService implements ReservationUtils {
 
     private final UserRepository userRepository;
 
-    private final ParticipationRepository participationRepository;
+    private final UserUtils userUtils;
 
 
 
 
-    // 방 예약
+    // 방 생성
 
     @Transactional
     public Long addReservation(AddReservationDto addReservationDto, String userUid) throws IOException {
 
-        User user = userRepository.findByUid(userUid).get();
+        User user = userUtils.getUserUid(userUid);
+
+        log.info("=================================================");
+
+        matchSex(user.getSex(),addReservationDto.getSex());
+
+        log.info("=================================================");
 
         Reservation reservation = Reservation.createReservation(user, addReservationDto.getReserveDate(), addReservationDto.getReserveTime(), addReservationDto.getTitle(), addReservationDto.getStartPlace()
                 , addReservationDto.getDestination(), addReservationDto.getSex(), addReservationDto.getPassengerNum(), addReservationDto.getChallengeWord(), addReservationDto.getCountersignWord(),
                 addReservationDto.getStartLatitude(),addReservationDto.getStartLongitude(),addReservationDto.getFinishLatitude(),addReservationDto.getFinishLongitude());
 
         reservationRepository.save(reservation);
+        log.info("=================================================");
+        log.info("reservation={}",reservation);
+
         return reservation.getId();
     }
 
@@ -57,7 +69,7 @@ public class ReservationService implements ReservationUtils {
     @Transactional
     public Long deleteReservation(Long reservationId, String userUid) throws  IOException{
 
-        User user = userRepository.findByUid(userUid).get();
+        User user = userUtils.getUserUid(userUid);
 
         if(reservationRepository.findById(reservationId).get().getUser()!=user)return null;
 
@@ -162,5 +174,12 @@ public class ReservationService implements ReservationUtils {
         return reservationRepository.findById(id).orElseThrow(
                 () -> ReservationNotFound.EXCEPTION);
 
+    }
+
+    @Override
+    public void matchSex(Sex userSex, Sex reservationSex) {
+        if(!(userSex.equals(reservationSex) || reservationSex.equals(Sex.ALL))){
+            throw SexException.EXCEPTION;
+        }
     }
 }
