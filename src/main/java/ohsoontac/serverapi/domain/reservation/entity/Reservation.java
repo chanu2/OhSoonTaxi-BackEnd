@@ -8,12 +8,10 @@ import lombok.NoArgsConstructor;
 import ohsoontac.serverapi.domain.common.ReservationStatus;
 import ohsoontac.serverapi.domain.common.Sex;
 import ohsoontac.serverapi.domain.participation.entity.Participation;
+import ohsoontac.serverapi.domain.reservation.exception.NotHostException;
 import ohsoontac.serverapi.domain.user.entity.User;
 import ohsoontac.serverapi.global.database.BaseTimeEntity;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -158,6 +156,16 @@ public class Reservation extends BaseTimeEntity {
             this.changeReserveStatus(ReservationStatus.POSSIBLE);
         }
 
+    }
+
+    public void validUserIsHost(String userUid) {
+        if (!checkUserIsHost(userUid)) {
+            throw NotHostException.EXCEPTION;
+        }
+    }
+
+    public Boolean checkUserIsHost(String userUid) {
+        return user.getUid().equals(userUid);
     }
 
 

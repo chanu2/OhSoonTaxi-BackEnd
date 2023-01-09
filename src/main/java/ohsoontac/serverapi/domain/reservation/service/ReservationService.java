@@ -65,13 +65,15 @@ public class ReservationService implements ReservationUtils {
     }
 
 
-    //방 취소
+    //방 삭제
     @Transactional
     public Long deleteReservation(Long reservationId, String userUid) throws  IOException{
 
         User user = userUtils.getUserUid(userUid);
 
-        if(reservationRepository.findById(reservationId).get().getUser()!=user)return null;
+        Reservation reservation = findReservation(reservationId);
+
+        reservation.validUserIsHost(user.getUid());
 
         reservationRepository.deleteById(reservationId);
 

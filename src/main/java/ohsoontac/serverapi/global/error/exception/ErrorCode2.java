@@ -21,6 +21,8 @@ public enum ErrorCode2 {
     USER_NOT_FOUND(404, "해당하는 정보의 사용자를 찾을 수 없습니다."),
 
     RESERVATION_NOT_FOUND(404, "해당하는 정보의 방을 찾을 수 없습니다."),
+
+    GROUP_NOT_HOST(400,  "방의 호스트가 아닙니다"),
     PARTICIPATION_NOT_FOUND(404, "참여하지 않은 방입니다."),
 
     /* 409 : CONFLICT : Resource의 현재 상태와 충돌. 보통 중복된 데이터 존재 */
