@@ -70,9 +70,9 @@ public class ParticipationService implements ParticipationUtils {
                 .seatPosition(addParticipationDto.getSeatPosition())
                 .build());
 
-        if (findUser.getUid() == userUid) {
-            return null;
-        }
+//        if (findUser.getUid() == userUid) {
+//            return null;
+//        }
 
         findReservation.addCurrentNum();
         findReservation.addParticipation(participation);
@@ -111,7 +111,7 @@ public class ParticipationService implements ParticipationUtils {
 
         Optional<User> user = userRepository.findByUid(userUid);
 
-        Reservation findReservation = reservationRepository.findById(reservationId).get();
+        Reservation findReservation = reservationUtils.findReservation(reservationId);
 
         Participation participation = participationRepository.findParticipation(reservationId, user.get().getId());
 

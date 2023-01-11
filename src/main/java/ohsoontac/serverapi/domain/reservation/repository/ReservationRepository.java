@@ -23,7 +23,6 @@ public interface ReservationRepository extends JpaRepository<Reservation,Long> {
     void deleteById(Long reservationId);
 
 
-
     @Query("select r from Reservation r where r.reserveDate = :day order by r.reserveTime ")
     List<Reservation> findBySortDate(@Param("day") LocalDate day);
 
