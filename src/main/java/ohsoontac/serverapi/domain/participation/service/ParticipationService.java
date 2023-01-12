@@ -57,9 +57,6 @@ public class ParticipationService implements ParticipationUtils {
 
         duplicationParticipation(findReservation.getId(), findUser.getId());
 
-//       if(!findReservation.getSex().equals(findUser.getSex())){
-//           throw new SexException(ErrorCode1.MISMATCH_SEX);
-//       }
 
         reservationUtils.matchSex(findUser.getSex(),findReservation.getSex());
 

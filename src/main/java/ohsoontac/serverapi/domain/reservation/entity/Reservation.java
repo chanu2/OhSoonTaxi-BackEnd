@@ -32,7 +32,7 @@ public class Reservation extends BaseTimeEntity {
     @Column(name = "reservation_id")
     public Long id;
 
-    @OneToMany(mappedBy = "reservation",orphanRemoval = true)
+    @OneToMany(mappedBy = "reservation",cascade = CascadeType.ALL)
     private List<Participation> participations = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -63,7 +63,6 @@ public class Reservation extends BaseTimeEntity {
 
     private Double finishLatitude;
     private Double finishLongitude;
-
 
 
     @Builder
@@ -128,6 +127,7 @@ public class Reservation extends BaseTimeEntity {
                 .build();
 
     }
+
 
     // 이름 변경
     public void changeTitle(String title) {
