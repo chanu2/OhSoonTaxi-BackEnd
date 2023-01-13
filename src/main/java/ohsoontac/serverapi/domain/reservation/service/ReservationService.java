@@ -47,7 +47,6 @@ public class ReservationService implements ReservationUtils {
 
         User user = userUtils.getUserUid(userUid);
 
-        log.info("=================================================");
 
         matchSex(user.getSex(),addReservationDto.getSex());
 
@@ -59,7 +58,7 @@ public class ReservationService implements ReservationUtils {
 
         reservationRepository.save(reservation);
         log.info("=================================================");
-        log.info("reservation={}",reservation);
+
 
         return reservation.getId();
     }
