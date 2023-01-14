@@ -86,13 +86,17 @@ public class ReservationService implements ReservationUtils {
     public Long updateReservation(UpdateReservationDto updateReservationDto, String userUid)throws IOException{
 
         User user = userUtils.getUserUid(userUid);
-        Optional<Reservation> reservation = reservationRepository.findById(updateReservationDto.getId());
-        if(reservation.get().getUser()!=user) return null;
+//        Optional<Reservation> reservation = reservationRepository.findById(updateReservationDto.getId());
 
-        reservation.get().changeTitle(updateReservationDto.getTitle());
+        Reservation reservation = findReservation(updateReservationDto.getId());
 
-        return reservation.get().getId();
 
+
+        if(reservation.getUser()!=user) return null;
+
+        reservation.changeTitle(updateReservationDto.getTitle());
+
+        return reservation.getId();
 
     }
 

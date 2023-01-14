@@ -33,17 +33,7 @@ public class AddReservationDto {
     private Double finishLongitude;
 
 
-//    public AddReservationDto(LocalDate reserveDate, LocalTime startT, String title, String startPlace, String destination, Sex sex, Integer passengerNum, String challengeWord, String countersignWord) {
-//        this.reserveDate = reserveDate;
-//        this.startT = startT;
-//        this.title = title;
-//        this.startPlace = startPlace;
-//        this.destination = destination;
-//        this.sex = sex;
-//        this.passengerNum = passengerNum;
-//        this.challengeWord = challengeWord;
-//        this.countersignWord = countersignWord;
-//    }
+
 
 
 
