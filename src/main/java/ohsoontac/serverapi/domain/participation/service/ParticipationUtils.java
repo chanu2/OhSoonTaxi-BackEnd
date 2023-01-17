@@ -7,4 +7,6 @@ public interface ParticipationUtils {
     void duplicationParticipation(Long reservationId, Long userId);
 
     Participation participatedReservation(Long reservationId, Long userId);
+
+
 }

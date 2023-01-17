@@ -40,6 +40,7 @@ public class ReservationService implements ReservationUtils {
 
 
 
+
     // 방 생성
 
     @Transactional
@@ -52,9 +53,20 @@ public class ReservationService implements ReservationUtils {
 
         log.info("=================================================");
 
-        Reservation reservation = Reservation.createReservation(user, addReservationDto.getReserveDate(), addReservationDto.getReserveTime(), addReservationDto.getTitle(), addReservationDto.getStartPlace()
-                , addReservationDto.getDestination(), addReservationDto.getSex(), addReservationDto.getPassengerNum(), addReservationDto.getChallengeWord(), addReservationDto.getCountersignWord(),
-                addReservationDto.getStartLatitude(),addReservationDto.getStartLongitude(),addReservationDto.getFinishLatitude(),addReservationDto.getFinishLongitude());
+        Reservation reservation = Reservation.createReservation(user,
+                addReservationDto.getReserveDate(),
+                addReservationDto.getReserveTime(),
+                addReservationDto.getTitle(),
+                addReservationDto.getStartPlace(),
+                addReservationDto.getDestination(),
+                addReservationDto.getSex(),
+                addReservationDto.getPassengerNum(),
+                addReservationDto.getChallengeWord(),
+                addReservationDto.getCountersignWord(),
+                addReservationDto.getStartLatitude(),
+                addReservationDto.getStartLongitude(),
+                addReservationDto.getFinishLatitude(),
+                addReservationDto.getFinishLongitude());
 
         reservationRepository.save(reservation);
         log.info("=================================================");
@@ -86,13 +98,10 @@ public class ReservationService implements ReservationUtils {
     public Long updateReservation(UpdateReservationDto updateReservationDto, String userUid)throws IOException{
 
         User user = userUtils.getUserUid(userUid);
-//        Optional<Reservation> reservation = reservationRepository.findById(updateReservationDto.getId());
 
         Reservation reservation = findReservation(updateReservationDto.getId());
 
-
-
-        if(reservation.getUser()!=user) return null;
+        reservation.validUserIsHost(userUid);
 
         reservation.changeTitle(updateReservationDto.getTitle());
 
@@ -128,7 +137,7 @@ public class ReservationService implements ReservationUtils {
     public ReserveDetailResponseDto getReservationDetail (Long reservationId){
 
 
-        Reservation findReservation = reservationRepository.findById(reservationId).get();
+        Reservation findReservation = findReservation(reservationId);
         ReserveDetailResponseDto reserveDetailResponseDto = new ReserveDetailResponseDto(findReservation);
 
         return reserveDetailResponseDto;
@@ -141,9 +150,9 @@ public class ReservationService implements ReservationUtils {
     @Transactional
     public List<ReservedByMeResponseDto> reservedByMe (String userUid){
 
-        Optional<User> user = userRepository.findByUid(userUid);
+        User user = userUtils.getUserUid(userUid);
 
-        List<Reservation> reservations = reservationRepository.reservedByMe(user.get().getId());
+        List<Reservation> reservations = reservationRepository.reservedByMe(user.getId());
 
         return reservations.stream().map(r -> new ReservedByMeResponseDto(r)).collect(Collectors.toList());
 
