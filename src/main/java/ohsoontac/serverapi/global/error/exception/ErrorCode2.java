@@ -19,6 +19,7 @@ public enum ErrorCode2 {
 
     /* 404 NOT_FOUND : Resource를 찾을 수 없음 */
     USER_NOT_FOUND(404, "해당하는 정보의 사용자를 찾을 수 없습니다."),
+    DUPLICATE_LOGIN(404, "해당 아이디는 이미 존재합니다."),
 
     RESERVATION_NOT_FOUND(404, "해당하는 정보의 방을 찾을 수 없습니다."),
 

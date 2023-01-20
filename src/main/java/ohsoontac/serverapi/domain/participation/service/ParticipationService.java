@@ -8,15 +8,13 @@ import ohsoontac.serverapi.domain.participation.dto.request.AddParticipationDto;
 import ohsoontac.serverapi.domain.participation.entity.Participation;
 import ohsoontac.serverapi.domain.participation.exception.DuplicatedParticipationException;
 import ohsoontac.serverapi.domain.participation.exception.ParticipationNotFound;
-import ohsoontac.serverapi.domain.participation.exception.SexException;
 import ohsoontac.serverapi.domain.participation.repository.ParticipationRepository;
 import ohsoontac.serverapi.domain.reservation.entity.Reservation;
 import ohsoontac.serverapi.domain.reservation.repository.ReservationRepository;
 import ohsoontac.serverapi.domain.reservation.service.ReservationUtils;
 import ohsoontac.serverapi.domain.user.entity.User;
 import ohsoontac.serverapi.domain.user.repository.UserRepository;
-import ohsoontac.serverapi.global.error.exception.ErrorCode1;
-import ohsoontac.serverapi.global.utils.UserUtils;
+import ohsoontac.serverapi.global.utils.user.UserUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,36 +38,56 @@ public class ParticipationService implements ParticipationUtils {
 
 
 
-    //참여하기
-    @Transactional
-    public Long addParticipation(AddParticipationDto addParticipationDto, String userUid) {
+//    //참여하기
+//    @Transactional
+//    public Long addParticipation(AddParticipationDto addParticipationDto, String userUid) {
+//
+//
+//        User findUser = userUtils.getUserUid(userUid);
+//
+//        Reservation findReservation = reservationUtils.findReservation(addParticipationDto.getReservationId());
+//
+//        duplicationParticipation(findReservation.getId(), findUser.getId());
+//
+//        reservationUtils.matchSex(findUser.getSex(),findReservation.getSex());
+//
+//        Participation participation = participationRepository.save(
+//
+//                Participation.builder()
+//                .user(findUser)
+//                .reservation(findReservation)
+//                .seatPosition(addParticipationDto.getSeatPosition())
+//                .build());
+//
+//        findReservation.addCurrentNum();
+//        findReservation.addParticipation(participation);
+//        findReservation.changeReservationStatus();
+//
+//
+//        return participation.getId();
+//
+//
+//    }
 
-        User findUser = userUtils.getUserUid(userUid);
+    @Transactional
+    public Long addParticipation(AddParticipationDto addParticipationDto) {
+
+
+        User user = userUtils.getUserFromSecurityContext();
 
         Reservation findReservation = reservationUtils.findReservation(addParticipationDto.getReservationId());
 
-        //User findUser = userRepository.findByUid(userUid).get();
-        //Reservation findReservation = reservationRepository.findById(addParticipationDto.getReservationId()).get();
+        duplicationParticipation(findReservation.getId(), user.getId());
 
-        //
-//        participationRepository.findParticipation1(findReservation.getId(), findUser.getId()).orElseThrow(
-//                ()-> DuplicatedParticipationException.EXCEPTION);
+        reservationUtils.matchSex(user.getSex(),findReservation.getSex());
 
-        duplicationParticipation(findReservation.getId(), findUser.getId());
+        Participation participation = participationRepository.save(
 
-
-        reservationUtils.matchSex(findUser.getSex(),findReservation.getSex());
-
-
-        Participation participation = participationRepository.save(Participation.builder()
-                .user(findUser)
-                .reservation(findReservation)
-                .seatPosition(addParticipationDto.getSeatPosition())
-                .build());
-
-//        if (findUser.getUid() == userUid) {
-//            return null;
-//        }
+                Participation.builder()
+                        .user(user)
+                        .reservation(findReservation)
+                        .seatPosition(addParticipationDto.getSeatPosition())
+                        .build());
 
         findReservation.addCurrentNum();
         findReservation.addParticipation(participation);
@@ -81,14 +99,31 @@ public class ParticipationService implements ParticipationUtils {
 
     }
 
-    //참여 취소
-    @Transactional
-    public Long deleteParticipation(Long reservationId, String userUid) {
 
-        User findUser = userUtils.getUserUid(userUid);
+    //참여 취소
+//    @Transactional
+//    public Long deleteParticipation(Long reservationId, String userUid) {
+//
+//        User findUser = userUtils.getUserUid(userUid);
+//        Reservation reservation = reservationUtils.findReservation(reservationId);
+//        Participation participation = participatedReservation(reservation.getId(), findUser.getId());
+//
+//        participation.getReservation().subtractCurrentNum();
+//        participation.getReservation().subParticipation(participation);
+//        participation.getReservation().changeReservationStatus();
+//
+//        participationRepository.deleteById(participation.getId());
+//
+//        return participation.getId();
+//
+//    }
+
+    @Transactional
+    public Long deleteParticipation(Long reservationId) {
+
+        User user = userUtils.getUserFromSecurityContext();
         Reservation reservation = reservationUtils.findReservation(reservationId);
-        Participation participation = participatedReservation(reservation.getId(), findUser.getId());
-//        Participation participation = participationRepository.findParticipation(reservationId, findUser.getId());
+        Participation participation = participatedReservation(reservation.getId(), user.getId());
 
         participation.getReservation().subtractCurrentNum();
         participation.getReservation().subParticipation(participation);
@@ -96,26 +131,55 @@ public class ParticipationService implements ParticipationUtils {
 
         participationRepository.deleteById(participation.getId());
 
-
         return participation.getId();
 
     }
 
 
     //방에 참여했는지 확인
-    @Transactional
-    public String checkParticipation(Long reservationId, String userUid) {
+//    @Transactional
+//    public String checkParticipation(Long reservationId, String userUid) {
+//
+//        User user = userUtils.getUserUid(userUid);
+//
+//        Reservation findReservation = reservationUtils.findReservation(reservationId);
+//
+//
+//        Optional<Participation> participation = participationRepository.findParticipation1(findReservation.getId(),user.getId());
+//
+//        LocalDateTime nowDateTime = LocalDateTime.now();
+//        LocalDateTime reserveDateTime = LocalDateTime.of(findReservation.getReserveDate(), findReservation.getReserveTime());
+//
+//        if (participation.isPresent()) {
+//
+//            if (nowDateTime.isAfter(reserveDateTime.minusMinutes(30)) && nowDateTime.isBefore(reserveDateTime)) {
+//                return "1";
+//            } else if (nowDateTime.isBefore(reserveDateTime)) {
+//                System.out.println(nowDateTime.isBefore(reserveDateTime));
+//                return "2";
+//            }
+//            return "4";
+//        } else if (nowDateTime.isBefore(reserveDateTime)
+//                && findReservation.getReservationStatus() != ReservationStatus.DEADLINE) {
+//            return "3";
+//        }
+//        return "4";
+//    }
 
-        Optional<User> user = userRepository.findByUid(userUid);
+    @Transactional
+    public String checkParticipation(Long reservationId) {
+
+        User user = userUtils.getUserFromSecurityContext();
 
         Reservation findReservation = reservationUtils.findReservation(reservationId);
 
-        Participation participation = participationRepository.findParticipation(reservationId, user.get().getId());
+
+        Optional<Participation> participation = participationRepository.findParticipation1(findReservation.getId(),user.getId());
 
         LocalDateTime nowDateTime = LocalDateTime.now();
         LocalDateTime reserveDateTime = LocalDateTime.of(findReservation.getReserveDate(), findReservation.getReserveTime());
 
-        if (participation!=null) {
+        if (participation.isPresent()) {
 
             if (nowDateTime.isAfter(reserveDateTime.minusMinutes(30)) && nowDateTime.isBefore(reserveDateTime)) {
                 return "1";

@@ -10,6 +10,9 @@ import ohsoontac.serverapi.domain.user.service.UserService;
 import ohsoontac.serverapi.global.response.DefaultRes;
 import ohsoontac.serverapi.global.response.StatusCode;
 import ohsoontac.serverapi.global.security.JwtTokenProvider;
+import ohsoontac.serverapi.global.successResponse.SuccessResponse;
+import ohsoontac.serverapi.global.successResponse.SuccessResponse1;
+import ohsoontac.serverapi.global.successResponse.SuccessResponseMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,21 +37,30 @@ public class UserController {
     @GetMapping("/checkUnique")
     public ResponseEntity check(@RequestParam(name = "userUid")String uid) {
 
-        Boolean result = userService.checkUnique(uid);
+        userService.checkUnique(uid);
 
-        return result ?
-                new ResponseEntity(DefaultRes.res(StatusCode.OK, "사용가능한 아이디입니다"), HttpStatus.OK):
-                new ResponseEntity(DefaultRes.res(StatusCode.OK, "중복된 아이디입니다"), HttpStatus.OK);
+        return SuccessResponse1.successtoResponseEntity(StatusCode.OK,null, SuccessResponseMessage.USE_USERID);
+
     }
+
+    // 회원가입 요청
+//    @PostMapping("/signUp")
+//    public ResponseEntity signUp(@RequestBody SignUpDto user) {
+//        Long result = userService.signUp(user);
+//
+//        return result != null ?
+//                new ResponseEntity(DefaultRes.res(StatusCode.OK, "회원가입 요청을 성공하였습니다"), HttpStatus.OK):
+//                new ResponseEntity(DefaultRes.res(StatusCode.BAD_REQUEST, "잘못된 요청"), HttpStatus.OK);
+//    }
 
     // 회원가입 요청
     @PostMapping("/signUp")
     public ResponseEntity signUp(@RequestBody SignUpDto user) {
-        Long result = userService.signUp(user);
 
-        return result != null ?
-                new ResponseEntity(DefaultRes.res(StatusCode.OK, "회원가입 요청을 성공하였습니다"), HttpStatus.OK):
-                new ResponseEntity(DefaultRes.res(StatusCode.BAD_REQUEST, "잘못된 요청"), HttpStatus.OK);
+        Long result = userService.signUp(user);
+        // TODO: 2023-01-20  valid 적용
+
+        return SuccessResponse1.successtoResponseEntity(StatusCode.OK,null, SuccessResponseMessage.CREATED_USER);
     }
 
     // 로그인
@@ -94,5 +106,6 @@ public class UserController {
     }
 
     // 내정보 보여주기
+
 
 }

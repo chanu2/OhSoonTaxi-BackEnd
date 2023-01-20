@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ohsoontac.serverapi.domain.common.Sex;
 import ohsoontac.serverapi.domain.participation.exception.SexException;
-import ohsoontac.serverapi.domain.participation.repository.ParticipationRepository;
+import ohsoontac.serverapi.domain.participation.service.ParticipationUtils;
 import ohsoontac.serverapi.domain.reservation.dto.request.AddReservationDto;
 import ohsoontac.serverapi.domain.reservation.dto.request.UpdateReservationDto;
 import ohsoontac.serverapi.domain.reservation.dto.response.*;
@@ -15,14 +15,14 @@ import ohsoontac.serverapi.domain.reservation.exception.ReservationNotFound;
 import ohsoontac.serverapi.domain.reservation.repository.ReservationRepository;
 import ohsoontac.serverapi.domain.user.entity.User;
 import ohsoontac.serverapi.domain.user.repository.UserRepository;
-import ohsoontac.serverapi.global.utils.UserUtils;
+import ohsoontac.serverapi.global.utils.security.SecurityUtils;
+import ohsoontac.serverapi.global.utils.user.UserUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -37,23 +37,57 @@ public class ReservationService implements ReservationUtils {
 
     private final UserUtils userUtils;
 
+    private final ParticipationUtils participationUtils;
+
 
 
 
 
     // 방 생성
 
+//    @Transactional
+//    public Long addReservation(AddReservationDto addReservationDto, String userUid) throws IOException {
+//
+//        User user = userUtils.getUserUid(userUid);
+//
+//        matchSex(user.getSex(),addReservationDto.getSex());
+//
+//        Reservation reservation = Reservation.createReservation(
+//                user,
+//                addReservationDto.getReserveDate(),
+//                addReservationDto.getReserveTime(),
+//                addReservationDto.getTitle(),
+//                addReservationDto.getStartPlace(),
+//                addReservationDto.getDestination(),
+//                addReservationDto.getSex(),
+//                addReservationDto.getPassengerNum(),
+//                addReservationDto.getChallengeWord(),
+//                addReservationDto.getCountersignWord(),
+//                addReservationDto.getStartLatitude(),
+//                addReservationDto.getStartLongitude(),
+//                addReservationDto.getFinishLatitude(),
+//                addReservationDto.getFinishLongitude());
+//
+//        reservationRepository.save(reservation);
+//        log.info("=================================================");
+//
+//        return reservation.getId();
+//    }
+
+
     @Transactional
-    public Long addReservation(AddReservationDto addReservationDto, String userUid) throws IOException {
+    public Long addReservation(AddReservationDto addReservationDto) throws IOException {
 
-        User user = userUtils.getUserUid(userUid);
+        User user = userUtils.getUserFromSecurityContext();
 
+        log.info("user={}",user);
 
+        log.info("userUid={}",user.getUid());
+        
         matchSex(user.getSex(),addReservationDto.getSex());
 
-        log.info("=================================================");
-
-        Reservation reservation = Reservation.createReservation(user,
+        Reservation reservation = Reservation.createReservation(
+                user,
                 addReservationDto.getReserveDate(),
                 addReservationDto.getReserveTime(),
                 addReservationDto.getTitle(),
@@ -71,16 +105,29 @@ public class ReservationService implements ReservationUtils {
         reservationRepository.save(reservation);
         log.info("=================================================");
 
-
         return reservation.getId();
     }
 
 
     //방 삭제
-    @Transactional
-    public Long deleteReservation(Long reservationId, String userUid) throws  IOException{
+//    @Transactional
+//    public Long deleteReservation(Long reservationId, String userUid) throws  IOException{
+//
+//        User user = userUtils.getUserUid(userUid);
+//
+//        Reservation reservation = findReservation(reservationId);
+//
+//        reservation.validUserIsHost(user.getUid());
+//
+//        reservationRepository.deleteById(reservationId);
+//
+//        return reservationId;
+//    }
 
-        User user = userUtils.getUserUid(userUid);
+    @Transactional
+    public Long deleteReservation(Long reservationId) throws  IOException{
+
+        User user = userUtils.getUserFromSecurityContext();
 
         Reservation reservation = findReservation(reservationId);
 
@@ -89,19 +136,33 @@ public class ReservationService implements ReservationUtils {
         reservationRepository.deleteById(reservationId);
 
         return reservationId;
-
     }
 
     // 방 업데이트
 
-    @Transactional
-    public Long updateReservation(UpdateReservationDto updateReservationDto, String userUid)throws IOException{
+//    @Transactional
+//    public Long updateReservation(UpdateReservationDto updateReservationDto, String userUid)throws IOException{
+//
+//        userUtils.getUserUid(userUid);
+//
+//        Reservation reservation = findReservation(updateReservationDto.getId());
+//
+//        reservation.validUserIsHost(userUid);
+//
+//        reservation.changeTitle(updateReservationDto.getTitle());
+//
+//        return reservation.getId();
+//
+//    }
 
-        User user = userUtils.getUserUid(userUid);
+    @Transactional
+    public Long updateReservation(UpdateReservationDto updateReservationDto){
+
+        User user = userUtils.getUserFromSecurityContext();
 
         Reservation reservation = findReservation(updateReservationDto.getId());
 
-        reservation.validUserIsHost(userUid);
+        reservation.validUserIsHost(user.getUid());
 
         reservation.changeTitle(updateReservationDto.getTitle());
 
@@ -136,46 +197,76 @@ public class ReservationService implements ReservationUtils {
     @Transactional
     public ReserveDetailResponseDto getReservationDetail (Long reservationId){
 
-
         Reservation findReservation = findReservation(reservationId);
+
         ReserveDetailResponseDto reserveDetailResponseDto = new ReserveDetailResponseDto(findReservation);
 
         return reserveDetailResponseDto;
-
-
     }
 
 
     // 내가 작성한 게시글
-    @Transactional
-    public List<ReservedByMeResponseDto> reservedByMe (String userUid){
+//    @Transactional
+//    public List<ReservedByMeResponseDto> reservedByMe (String userUid){
+//
+//        User user = userUtils.getUserUid(userUid);
+//
+//        List<Reservation> reservations = reservationRepository.reservedByMe(user.getId());
+//
+//        return reservations.stream().map(r -> new ReservedByMeResponseDto(r)).collect(Collectors.toList());
+//
+//    }
 
-        User user = userUtils.getUserUid(userUid);
+    @Transactional
+    public List<ReservedByMeResponseDto> reservedByMe(){
+
+        User user = userUtils.getUserFromSecurityContext();
 
         List<Reservation> reservations = reservationRepository.reservedByMe(user.getId());
 
         return reservations.stream().map(r -> new ReservedByMeResponseDto(r)).collect(Collectors.toList());
 
-
     }
 
     // 내가 참여한 게시글 조회
+//    @Transactional
+//    public List<ParticipatedReserveResponseDto> participatedReservation(String userUid){
+//
+//        List<Reservation> participatedReserve = reservationRepository.findParticipatedReserve(userUid);
+//
+//        return participatedReserve.stream().map( r -> new ParticipatedReserveResponseDto(r)).collect(Collectors.toList());
+//    }
     @Transactional
-    public List<ParticipatedReserveResponseDto> participatedReservation(String userUid){
+    public List<ParticipatedReserveResponseDto> participatedReservation(){
 
+        String userUid = SecurityUtils.getCurrentUserUid();
 
         List<Reservation> participatedReserve = reservationRepository.findParticipatedReserve(userUid);
 
         return participatedReserve.stream().map( r -> new ParticipatedReserveResponseDto(r)).collect(Collectors.toList());
-
     }
 
     // 암구호 보여주기
 
+//    @Transactional
+//    public PassphraseResponseDto getPassphrase(Long reservationId, String userUid){
+//
+//        Reservation reservation = findReservation(reservationId);
+//
+//        PassphraseResponseDto passphraseResponseDto = new PassphraseResponseDto(reservation);
+//
+//        return passphraseResponseDto;
+//    }
     @Transactional
-    public PassphraseResponseDto getPassphrase(Long reservationId, String userUid){
+    public PassphraseResponseDto getPassphrase(Long reservationId){
 
-        Reservation reservation = reservationRepository.findById(reservationId).get();
+        User user = userUtils.getUserFromSecurityContext();
+
+        // TODO: 2023-01-21 순환 관계 제거
+        participationUtils.participatedReservation(reservationId, user.getId());
+
+
+        Reservation reservation = findReservation(reservationId);
 
         PassphraseResponseDto passphraseResponseDto = new PassphraseResponseDto(reservation);
 

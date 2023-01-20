@@ -7,6 +7,7 @@ import ohsoontac.serverapi.domain.user.dto.request.SignInDto;
 import ohsoontac.serverapi.domain.user.dto.request.SignUpDto;
 import ohsoontac.serverapi.domain.user.entity.RefreshToken;
 import ohsoontac.serverapi.domain.user.entity.User;
+import ohsoontac.serverapi.domain.user.exception.DuplicateLoginException;
 import ohsoontac.serverapi.domain.user.exception.UserNotFoundException;
 import ohsoontac.serverapi.domain.user.repository.RefreshTokenRepository;
 import ohsoontac.serverapi.domain.user.repository.UserRepository;
@@ -77,11 +78,10 @@ public class UserService {
 
 
 
-    public Boolean signIn (String refreshToken,User user) {
+    public Boolean
+    signIn (String refreshToken,User user) {
 
         refreshTokenRepository.save(new RefreshToken(refreshToken));
-
-
         logger.info(user.getUid() + " (id : " + user.getId() + ") login");
         return true;
     }
@@ -99,10 +99,12 @@ public class UserService {
     }
 
 
-    public Boolean checkUnique(String uid) {
-        Boolean result = userRepository.existsByUid(uid);  // 아이디가 존재하면 true
+    public void checkUnique(String uid) {
 
-        return !result;
+        if(userRepository.existsByUid(uid)){
+            throw DuplicateLoginException.EXCEPTION;
+        }
+        //Boolean result = userRepository.existsByUid(uid);  // 아이디가 존재하면 true
     }
     public boolean checkPassword(User member, SignInDto user) {
         return passwordEncoder.matches(user.getPassword(), member.getPassword());
