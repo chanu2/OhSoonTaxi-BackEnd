@@ -89,6 +89,8 @@ public class ParticipationController {
     @GetMapping("/check/{reservationId}")
     public ResponseEntity checkParticipation(@PathVariable Long reservationId){
 
+        // TODO: 2023-01-21 asd 
+
 
 
         String status = participationService.checkParticipation(reservationId);
