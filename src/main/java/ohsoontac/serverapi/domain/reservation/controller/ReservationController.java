@@ -10,20 +10,16 @@ import ohsoontac.serverapi.domain.reservation.dto.request.UpdateReservationDto;
 import ohsoontac.serverapi.domain.reservation.dto.response.*;
 import ohsoontac.serverapi.domain.reservation.service.ReservationService;
 import ohsoontac.serverapi.domain.user.repository.UserRepository;
-import ohsoontac.serverapi.global.response.DefaultRes;
 import ohsoontac.serverapi.global.response.StatusCode;
-import ohsoontac.serverapi.global.successResponse.SuccessResponse;
 import ohsoontac.serverapi.global.successResponse.SuccessResponse1;
-import ohsoontac.serverapi.global.successResponse.SuccessResponseMessage;
+import ohsoontac.serverapi.global.successResponse.ResponseMessage;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -55,7 +51,7 @@ public class ReservationController {
 
         Long reserveId = reservationService.addReservation(addReservationDto);
 
-        return SuccessResponse1.successtoResponseEntity(StatusCode.OK,reserveId, SuccessResponseMessage.CREATE_RESERVATION);
+        return SuccessResponse1.successtoResponseEntity(StatusCode.OK,reserveId, ResponseMessage.CREATE_RESERVATION);
     }
 
 
@@ -75,7 +71,7 @@ public class ReservationController {
 
         reservationService.deleteReservation(reservationId);
 
-        return SuccessResponse1.successtoResponseEntity(StatusCode.OK,null, SuccessResponseMessage.DELETE_RESERVATION);
+        return SuccessResponse1.successtoResponseEntity(StatusCode.OK,null, ResponseMessage.DELETE_RESERVATION);
     }
 
     //방 정보 업데이트
@@ -84,7 +80,7 @@ public class ReservationController {
 
          reservationService.updateReservation(updateReservationDto);
 
-        return SuccessResponse1.successtoResponseEntity(StatusCode.OK,null, SuccessResponseMessage.UPDATE_RESERVATION);}
+        return SuccessResponse1.successtoResponseEntity(StatusCode.OK,null, ResponseMessage.UPDATE_RESERVATION);}
 
 
 
@@ -108,7 +104,7 @@ public class ReservationController {
 
         List<ReservationResponseDto> reservation = reservationService.getReservationSortList(reserveDate);
 
-        return SuccessResponse1.successtoResponseEntity(StatusCode.OK,reservation,SuccessResponseMessage.READ_RESERVATION);
+        return SuccessResponse1.successtoResponseEntity(StatusCode.OK,reservation, ResponseMessage.READ_RESERVATION);
 
     }
 
@@ -131,7 +127,7 @@ public class ReservationController {
         ReserveDetailResponseDto reservationDetail = reservationService.getReservationDetail(reservationId);
 
 
-        return SuccessResponse1.successtoResponseEntity(StatusCode.OK,reservationDetail,SuccessResponseMessage.INFO_RESERVATION);
+        return SuccessResponse1.successtoResponseEntity(StatusCode.OK,reservationDetail, ResponseMessage.INFO_RESERVATION);
 
     }
 
@@ -153,7 +149,7 @@ public class ReservationController {
 
         List<ParticipatedReserveResponseDto> participatedReserveResponseDtoList = reservationService.participatedReservation();
 
-        return SuccessResponse1.successtoResponseEntity(StatusCode.OK,participatedReserveResponseDtoList,SuccessResponseMessage.READ_RESERVATION);
+        return SuccessResponse1.successtoResponseEntity(StatusCode.OK,participatedReserveResponseDtoList, ResponseMessage.READ_RESERVATION);
 
     }
 
@@ -174,7 +170,7 @@ public class ReservationController {
 
         List<ReservedByMeResponseDto> reservedByMeResponseDtoList = reservationService.reservedByMe();
 
-        return SuccessResponse1.successtoResponseEntity(StatusCode.OK,reservedByMeResponseDtoList,SuccessResponseMessage.READ_RESERVATION);
+        return SuccessResponse1.successtoResponseEntity(StatusCode.OK,reservedByMeResponseDtoList, ResponseMessage.READ_RESERVATION);
 
     }
 
@@ -197,7 +193,7 @@ public class ReservationController {
 
         List<SearchResponseDto> searchReservation = reservationService.getSearchReservation(keyword);
 
-        return SuccessResponse1.successtoResponseEntity(StatusCode.OK,searchReservation,SuccessResponseMessage.READ_RESERVATION);
+        return SuccessResponse1.successtoResponseEntity(StatusCode.OK,searchReservation, ResponseMessage.READ_RESERVATION);
     }
 
     //암구호 보여주기
@@ -216,9 +212,10 @@ public class ReservationController {
     @GetMapping("/passphrase/{reservationId}")
     public ResponseEntity getPassphrase(@PathVariable("reservationId") Long reservationId){
 
+
         PassphraseResponseDto passphrase = reservationService.getPassphrase(reservationId);
 
-        return SuccessResponse1.successtoResponseEntity(StatusCode.OK,passphrase,SuccessResponseMessage.SHOW_COUNTERSIGN);
+        return SuccessResponse1.successtoResponseEntity(StatusCode.OK,passphrase, ResponseMessage.SHOW_COUNTERSIGN);
 
     }
 

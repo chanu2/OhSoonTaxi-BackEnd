@@ -7,12 +7,8 @@ import ohsoontac.serverapi.global.error.exception.OhSoonTacException;
 
 public class UserNotFoundException extends OhSoonTacException {
 
-
     public static final OhSoonTacException EXCEPTION = new UserNotFoundException();
 
-//    public UserNotFoundException() {
-//        super(ErrorCode1.USER_NOT_FOUND);
-//    }
     public UserNotFoundException() {
         super(ErrorCode2.USER_NOT_FOUND);
     }

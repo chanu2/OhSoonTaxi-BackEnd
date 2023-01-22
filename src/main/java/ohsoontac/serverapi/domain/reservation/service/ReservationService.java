@@ -5,7 +5,10 @@ package ohsoontac.serverapi.domain.reservation.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ohsoontac.serverapi.domain.common.Sex;
+import ohsoontac.serverapi.domain.participation.entity.Participation;
+import ohsoontac.serverapi.domain.participation.exception.ParticipationNotFound;
 import ohsoontac.serverapi.domain.participation.exception.SexException;
+import ohsoontac.serverapi.domain.participation.repository.ParticipationRepository;
 import ohsoontac.serverapi.domain.participation.service.ParticipationUtils;
 import ohsoontac.serverapi.domain.reservation.dto.request.AddReservationDto;
 import ohsoontac.serverapi.domain.reservation.dto.request.UpdateReservationDto;
@@ -23,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -37,7 +41,9 @@ public class ReservationService implements ReservationUtils {
 
     private final UserUtils userUtils;
 
-    private final ParticipationUtils participationUtils;
+    private final ParticipationRepository participationRepository;
+
+
 
 
 
@@ -173,6 +179,7 @@ public class ReservationService implements ReservationUtils {
     // 키워드 검색
     @Transactional
     public List<SearchResponseDto> getSearchReservation(String keyWord){
+
         List<Reservation> reservation = reservationRepository.findByTitleContaining(keyWord);
 
         return reservation.stream().map(r -> new SearchResponseDto(r)).collect(Collectors.toList());
@@ -263,8 +270,10 @@ public class ReservationService implements ReservationUtils {
         User user = userUtils.getUserFromSecurityContext();
 
         // TODO: 2023-01-21 순환 관계 제거
-        participationUtils.participatedReservation(reservationId, user.getId());
+        //participationUtils.participatedReservation(reservationId, user.getId());
 
+        participationRepository.findParticipation1(reservationId, user.getId()).orElseThrow(
+                () -> ParticipationNotFound.EXCEPTION);
 
         Reservation reservation = findReservation(reservationId);
 

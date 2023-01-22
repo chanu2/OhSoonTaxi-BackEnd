@@ -1,9 +1,11 @@
 package ohsoontac.serverapi.global.successResponse;
 
-public class SuccessResponseMessage {
+public class ResponseMessage {
 
     public static final String LOGIN_SUCCESS = "로그인 성공";
     public static final String LOGIN_FAIL = "로그인 실패";
+
+    public static final String LOGOUT_SUCCESS = "로그아웃성공";
 
 
     public static final String READ_USER = "회원 정보 조회 성공";
@@ -20,6 +22,8 @@ public class SuccessResponseMessage {
     public static final String CANCEL_PARTICIPATION = "참여 취소";
     public static final String DEADLINE_RESERVATION = "경기 마감";
     public static final String SHOW_COUNTERSIGN = "암구호 보여주기";
+
+    public static final String PARTICIPATE = "참여 하기";
 
     //RESERVATION
 

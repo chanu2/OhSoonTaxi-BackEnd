@@ -23,4 +23,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Transactional
     void deleteById(Long id);
+
+    boolean findByUidAndPassword(String uid, String password);
 }

@@ -32,7 +32,7 @@ public enum ErrorCode2 {
     INVALID_REFRESH_TOKEN(400, "리프레시 토큰이 유효하지 않습니다"),
     INVALID_ACCESS_TOKEN(400, "Access 토큰이 유효하지 않습니다"),
     MISMATCH_REFRESH_TOKEN(400, "리프레시 토큰의 유저 정보가 일치하지 않습니다"),
-
+    REFRESH_TOKEN_NOT_EXIST(400, "리프레시 토큰 정보가 올바르지 않습니다"),
 
     /* 401 UNAUTHORIZED : 인증되지 않은 사용자 */
 
@@ -40,6 +40,7 @@ public enum ErrorCode2 {
 
     /* 404 NOT_FOUND : Resource 를 찾을 수 없음 */
     MEMBER_NOT_FOUND(404, "해당 유저 정보를 찾을 수 없습니다"),
+    LOGIN_NOT_FOUND(404, "로그인 또는 비밀번호 오류입니다"),
     REFRESH_TOKEN_NOT_FOUND(404, "로그아웃 된 사용자입니다"),
     NO_ERROR_TYPE(404, "오류 발생"),
 
