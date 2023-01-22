@@ -1,6 +1,6 @@
 <h1 align="center">오늘의 순천향 택시</h1>
 
-<p align="center"><img src="ohsoon.png" width="200" height="200"/></p>
+<p align="center"><img src="https://user-images.githubusercontent.com/96942183/213925555-5c1bdff6-3ecb-41b3-a914-ebb35b08815a.png" width="200" height="200"/></p>
 
 
 # 💡 Topic
