@@ -1,7 +1,7 @@
 package ohsoontac.serverapi.domain.reservation.exception;
 
 
-import ohsoontac.serverapi.global.error.exception.ErrorCode2;
+import ohsoontac.serverapi.global.error.exception.ErrorCode;
 import ohsoontac.serverapi.global.error.exception.OhSoonTacException;
 
 public class ReservationNotFound extends OhSoonTacException {
@@ -12,6 +12,6 @@ public class ReservationNotFound extends OhSoonTacException {
 //    }
 
     public ReservationNotFound() {
-        super(ErrorCode2.RESERVATION_NOT_FOUND);
+        super(ErrorCode.RESERVATION_NOT_FOUND);
     }
 }

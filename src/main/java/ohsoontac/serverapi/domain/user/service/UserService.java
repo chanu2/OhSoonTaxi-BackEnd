@@ -10,11 +10,8 @@ import ohsoontac.serverapi.domain.user.entity.User;
 import ohsoontac.serverapi.domain.user.exception.DuplicateLoginException;
 import ohsoontac.serverapi.domain.user.exception.RefreshTokenNotExistException;
 import ohsoontac.serverapi.domain.user.exception.UserLoginException;
-import ohsoontac.serverapi.domain.user.exception.UserNotFoundException;
 import ohsoontac.serverapi.domain.user.repository.RefreshTokenRepository;
 import ohsoontac.serverapi.domain.user.repository.UserRepository;
-import ohsoontac.serverapi.global.error.exception.ErrorCode;
-import ohsoontac.serverapi.global.error.exception.ErrorCode1;
 import ohsoontac.serverapi.global.security.CustomAuthenticationEntryPoint;
 import ohsoontac.serverapi.global.utils.user.UserUtils;
 import org.slf4j.Logger;
@@ -77,16 +74,6 @@ public class UserService {
 
 
     // 로그아웃
-//    public Boolean signOut (String refreshToken,User user) {
-//        if(!refreshTokenRepository.existsByRefreshToken(refreshToken)) return false;
-//
-//        refreshTokenRepository.deleteByRefreshToken(refreshToken);
-//
-//        logger.info(user.getUid() + " (id : " + user.getId() + ") logout");
-//
-//        return true;
-//    }
-
     public void signOut (String refreshToken) {
 
         refreshToken = refreshToken.substring(7);
@@ -110,11 +97,7 @@ public class UserService {
         if(userRepository.existsByUid(uid)){
             throw DuplicateLoginException.EXCEPTION;
         }
-        //Boolean result = userRepository.existsByUid(uid);  // 아이디가 존재하면 true
     }
-//    public boolean checkPassword(User member, SignInDto user) {
-//        return passwordEncoder.matches(user.getPassword(), member.getPassword());
-//    }
 
     public void checkPassword(User member, SignInDto user) {
         if(!passwordEncoder.matches(user.getPassword(), member.getPassword())){

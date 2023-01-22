@@ -102,7 +102,6 @@ public class Reservation extends BaseTimeEntity {
     }
 
 
-
     //==생성메서드==//
     public static Reservation createReservation(User user,LocalDate reserveDate, LocalTime reserveTime, String title, String startPlace, String destination,
                                                 Sex sex, Integer passengerNum, String challengeWord, String countersignWord,Double startLatitude,
@@ -168,11 +167,8 @@ public class Reservation extends BaseTimeEntity {
         return user.getUid().equals(userUid);
     }
 
-
     public void changeReserveStatus(ReservationStatus reservationStatus){
         this.reservationStatus = reservationStatus;
     }
-
-
 
 }

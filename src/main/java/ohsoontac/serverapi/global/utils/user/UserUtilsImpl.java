@@ -20,11 +20,6 @@ public class UserUtilsImpl implements UserUtils {
     }
 
     @Override
-    public User getUserUid(String uid) {
-        return userRepository.findByUid(uid).orElseThrow(() -> UserNotFoundException.EXCEPTION);
-    }
-
-    @Override
     public User getUserFromSecurityContext() {
         String userUid = SecurityUtils.getCurrentUserUid();
         User user = getUserByUid(userUid);

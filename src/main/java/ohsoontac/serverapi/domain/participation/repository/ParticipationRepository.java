@@ -19,13 +19,7 @@ public interface ParticipationRepository extends JpaRepository<Participation,Lon
             " join fetch p.user u"+
             " join fetch p.reservation r"+
             " where r.id = :reservationId and u.id = :userId ")
-    Participation findParticipation(@Param("reservationId") Long reserveId, @Param("userId")Long userId);
-
-    @Query("select p from Participation p"+
-            " join fetch p.user u"+
-            " join fetch p.reservation r"+
-            " where r.id = :reservationId and u.id = :userId ")
-    Optional<Participation> findParticipation1(@Param("reservationId") Long reserveId, @Param("userId")Long userId);
+    Optional<Participation> findParticipation(@Param("reservationId") Long reserveId, @Param("userId")Long userId);
 
 
     @Override

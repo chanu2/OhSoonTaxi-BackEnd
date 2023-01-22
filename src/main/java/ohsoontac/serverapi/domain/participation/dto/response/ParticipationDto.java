@@ -1,7 +1,5 @@
 package ohsoontac.serverapi.domain.participation.dto.response;
 
-
-
 import lombok.Getter;
 import ohsoontac.serverapi.domain.participation.entity.Participation;
 

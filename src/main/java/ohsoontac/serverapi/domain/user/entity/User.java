@@ -1,7 +1,6 @@
 package ohsoontac.serverapi.domain.user.entity;
 
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -11,7 +10,6 @@ import ohsoontac.serverapi.domain.common.Sex;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +39,6 @@ public class User {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
 
-
     @Builder
     public User(String uid, String password, String name, String schoolNum, String phoneNum, Sex sex, List<String> roles) {
         this.uid = uid;
@@ -52,6 +49,5 @@ public class User {
         this.sex = sex;
         this.roles=roles;
     }
-
 
 }

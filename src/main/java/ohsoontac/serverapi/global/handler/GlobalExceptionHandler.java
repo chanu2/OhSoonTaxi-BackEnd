@@ -1,10 +1,10 @@
-package ohsoontac.serverapi.global.error;
+package ohsoontac.serverapi.global.handler;
 
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ohsoontac.serverapi.global.error.exception.ErrorCode2;
-import ohsoontac.serverapi.global.error.exception.ErrorResponse1;
+import ohsoontac.serverapi.global.error.ErrorResponse;
+import ohsoontac.serverapi.global.error.exception.ErrorCode;
 import ohsoontac.serverapi.global.error.exception.OhSoonTacException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -34,15 +34,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return super.handleBindException(ex, headers, status, request);
     }
 
-
     @ExceptionHandler(OhSoonTacException.class)
-    public ResponseEntity<ErrorResponse1> ohsoontacExceptionHandler(
+    public ResponseEntity<ErrorResponse> ohsoontacExceptionHandler(
             OhSoonTacException e, HttpServletRequest request) {
 
         log.error("exception={}",e);
-        ErrorCode2 code = e.getErrorCode2();
-        ErrorResponse1 errorResponse =
-                new ErrorResponse1(
+        ErrorCode code = e.getErrorCode();
+        ErrorResponse errorResponse =
+                new ErrorResponse(
                         code.getStatus(),
                         code.getReason(),
                         request.getRequestURL().toString());

@@ -10,10 +10,8 @@ import ohsoontac.serverapi.domain.participation.exception.DuplicatedParticipatio
 import ohsoontac.serverapi.domain.participation.exception.ParticipationNotFound;
 import ohsoontac.serverapi.domain.participation.repository.ParticipationRepository;
 import ohsoontac.serverapi.domain.reservation.entity.Reservation;
-import ohsoontac.serverapi.domain.reservation.repository.ReservationRepository;
 import ohsoontac.serverapi.domain.reservation.service.ReservationUtils;
 import ohsoontac.serverapi.domain.user.entity.User;
-import ohsoontac.serverapi.domain.user.repository.UserRepository;
 import ohsoontac.serverapi.global.utils.user.UserUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,52 +24,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ParticipationService implements ParticipationUtils {
 
-
-    private final UserRepository userRepository;
-
-    private final ReservationRepository reservationRepository;
-
     private final UserUtils userUtils;
-
     private final ReservationUtils reservationUtils;
     private final ParticipationRepository participationRepository;
 
 
-
-//    //참여하기
-//    @Transactional
-//    public Long addParticipation(AddParticipationDto addParticipationDto, String userUid) {
-//
-//
-//        User findUser = userUtils.getUserUid(userUid);
-//
-//        Reservation findReservation = reservationUtils.findReservation(addParticipationDto.getReservationId());
-//
-//        duplicationParticipation(findReservation.getId(), findUser.getId());
-//
-//        reservationUtils.matchSex(findUser.getSex(),findReservation.getSex());
-//
-//        Participation participation = participationRepository.save(
-//
-//                Participation.builder()
-//                .user(findUser)
-//                .reservation(findReservation)
-//                .seatPosition(addParticipationDto.getSeatPosition())
-//                .build());
-//
-//        findReservation.addCurrentNum();
-//        findReservation.addParticipation(participation);
-//        findReservation.changeReservationStatus();
-//
-//
-//        return participation.getId();
-//
-//
-//    }
-
+   //참여하기
     @Transactional
     public Long addParticipation(AddParticipationDto addParticipationDto) {
-
 
         User user = userUtils.getUserFromSecurityContext();
 
@@ -93,31 +53,12 @@ public class ParticipationService implements ParticipationUtils {
         findReservation.addParticipation(participation);
         findReservation.changeReservationStatus();
 
-
         return participation.getId();
-
 
     }
 
 
     //참여 취소
-//    @Transactional
-//    public Long deleteParticipation(Long reservationId, String userUid) {
-//
-//        User findUser = userUtils.getUserUid(userUid);
-//        Reservation reservation = reservationUtils.findReservation(reservationId);
-//        Participation participation = participatedReservation(reservation.getId(), findUser.getId());
-//
-//        participation.getReservation().subtractCurrentNum();
-//        participation.getReservation().subParticipation(participation);
-//        participation.getReservation().changeReservationStatus();
-//
-//        participationRepository.deleteById(participation.getId());
-//
-//        return participation.getId();
-//
-//    }
-
     @Transactional
     public Long deleteParticipation(Long reservationId) {
 
@@ -137,35 +78,6 @@ public class ParticipationService implements ParticipationUtils {
 
 
     //방에 참여했는지 확인
-//    @Transactional
-//    public String checkParticipation(Long reservationId, String userUid) {
-//
-//        User user = userUtils.getUserUid(userUid);
-//
-//        Reservation findReservation = reservationUtils.findReservation(reservationId);
-//
-//
-//        Optional<Participation> participation = participationRepository.findParticipation1(findReservation.getId(),user.getId());
-//
-//        LocalDateTime nowDateTime = LocalDateTime.now();
-//        LocalDateTime reserveDateTime = LocalDateTime.of(findReservation.getReserveDate(), findReservation.getReserveTime());
-//
-//        if (participation.isPresent()) {
-//
-//            if (nowDateTime.isAfter(reserveDateTime.minusMinutes(30)) && nowDateTime.isBefore(reserveDateTime)) {
-//                return "1";
-//            } else if (nowDateTime.isBefore(reserveDateTime)) {
-//                System.out.println(nowDateTime.isBefore(reserveDateTime));
-//                return "2";
-//            }
-//            return "4";
-//        } else if (nowDateTime.isBefore(reserveDateTime)
-//                && findReservation.getReservationStatus() != ReservationStatus.DEADLINE) {
-//            return "3";
-//        }
-//        return "4";
-//    }
-
     @Transactional
     public String checkParticipation(Long reservationId) {
 
@@ -173,8 +85,7 @@ public class ParticipationService implements ParticipationUtils {
 
         Reservation findReservation = reservationUtils.findReservation(reservationId);
 
-
-        Optional<Participation> participation = participationRepository.findParticipation1(findReservation.getId(),user.getId());
+        Optional<Participation> participation = participationRepository.findParticipation(findReservation.getId(),user.getId());
 
         LocalDateTime nowDateTime = LocalDateTime.now();
         LocalDateTime reserveDateTime = LocalDateTime.of(findReservation.getReserveDate(), findReservation.getReserveTime());
@@ -196,17 +107,18 @@ public class ParticipationService implements ParticipationUtils {
     }
 
 
+    // 중복 참여
     @Override
     public void duplicationParticipation(Long reservationId, Long userId) {
-        participationRepository.findParticipation1(reservationId, userId).ifPresent(p -> {
-                    throw DuplicatedParticipationException.EXCEPTION;
-                }
+        participationRepository.findParticipation(reservationId, userId).ifPresent(p -> {
+                    throw DuplicatedParticipationException.EXCEPTION;}
         );
     }
 
+    // 참여 여부
     @Override
     public Participation participatedReservation(Long reservationId, Long userId) {
-        return participationRepository.findParticipation1(reservationId,userId).orElseThrow(
+        return participationRepository.findParticipation(reservationId,userId).orElseThrow(
                 () -> ParticipationNotFound.EXCEPTION);
     }
 }
