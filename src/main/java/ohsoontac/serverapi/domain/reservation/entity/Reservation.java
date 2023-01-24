@@ -30,7 +30,7 @@ public class Reservation extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reservation_id")
-    public Long id;
+    private Long id;
 
     @OneToMany(mappedBy = "reservation",cascade = CascadeType.ALL)
     private List<Participation> participations = new ArrayList<>();
