@@ -41,7 +41,6 @@ public class ReserveDetailResponseDto {
     private List<ParticipationDto> participations;
 
 
-
     public ReserveDetailResponseDto(Reservation reservation){
         id= reservation.getId();
         title = reservation.getTitle();
