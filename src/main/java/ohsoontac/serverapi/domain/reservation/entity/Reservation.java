@@ -10,7 +10,8 @@ import ohsoontac.serverapi.domain.common.Sex;
 import ohsoontac.serverapi.domain.participation.entity.Participation;
 import ohsoontac.serverapi.domain.reservation.exception.NotHostException;
 import ohsoontac.serverapi.domain.user.entity.User;
-import ohsoontac.serverapi.global.database.BaseTimeEntity;
+import ohsoontac.serverapi.global.database.BaseEntity;
+
 
 
 import javax.persistence.*;
@@ -21,12 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-//@EnableJpaAuditing
-//@SpringBootApplication
-//@EntityListeners(AuditingEntityListener.class)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Reservation extends BaseTimeEntity {
+public class Reservation extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reservation_id")

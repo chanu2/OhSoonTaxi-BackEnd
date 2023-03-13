@@ -6,14 +6,15 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import ohsoontac.serverapi.global.database.BaseTimeEntity;
+import ohsoontac.serverapi.global.database.BaseEntity;
+
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Participation extends BaseTimeEntity {
+public class Participation extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="participation_id")
